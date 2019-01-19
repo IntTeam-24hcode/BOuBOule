@@ -11,6 +11,7 @@
 # think this stuff is worth it, you can buy me a beer or coffee in return
 #
 
+import json
 import os
 import logging
 import socket
@@ -78,7 +79,7 @@ class MQTTMPDController(object):
         except socket.gaierror:
             self._LOG.error('Issue w/ MQTT connection')
             raise IOError('Error while connecting to the MQTT broker.')
-    
+
         return mqtt_client
 
     def _mqtt_publish(self, payload):
@@ -129,3 +130,7 @@ class MQTTMPDController(object):
             self.mpd_client.pause()
         else:
             self.mpd_client.play()
+
+    def launchCMDLaumio(self, cmd, name = 'all'):
+        self.mqtt_client.publish("laumio/"+name+"/json", json.dumps(cmd))
+

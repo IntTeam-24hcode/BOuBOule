@@ -14,7 +14,6 @@
 """
 
 """
-import json
 
 from mqttmpd import MQTTMPDController
 
@@ -28,14 +27,29 @@ controller = MQTTMPDController(
     mpd_port=6600
 )
 
-mqttc = controller.mqtt_connect()
+controller.mqtt_connect()
 
+"""
 cmd= {
-  'command': 'fill',
-  'rgb': [255, 255, 0]
+  'command': 'fillColor',
+'rgb': [255, 255, 255]
 }
-mqttc.publish("laumio/all/json", json.dumps(cmd))
-mqttc.loop_forever()
+
+controller.launchCMDLaumio(cmd)
+/*
+cmd= {
+  'command': 'animate_raindow'
+}
+controller.launchCMDLaumio(cmd)
+"""
+cmd= {
+  'command': 'fillColor',
+'rgb': [0, 0, 0]
+}
+
+controller.launchCMDLaumio(cmd, '4') 
+
+controller.mqtt_client.loop(2)
 # loop!
 controller.loop_forever()
 
