@@ -57,7 +57,6 @@ def on_message(client, userdata, msg):
             client.publish("music/control/setvol", 0)
     else:
         print("Not traited:", msg.topic)
-    
 
 
 client = mqtt.Client()
@@ -73,18 +72,3 @@ client.subscribe("music/status")
 client.subscribe("laumio/status/advertise")
 client.loop_start()
 client.publish("laumio/all/discover")
-
-time.sleep(1)
-for _ in range(500):
-    time.sleep(0.1)
-    cmd = {
-        'command': 'fill',
-        'rgb': [int(random()*256), int(random()*256), int(random()*256)]
-    }
-    # client.publish("laumio/{}/json".format(sample(laumios, 1)[0]), json.dumps(cmd))
-# client.subscribe("capteur_bp/binary_sensor/bp1/state")
-# client.publish("music/control/play")
-# time.sleep(1)
-# client.publish("music/control/pause")
-# time.sleep(1)
-# client.publish("music/control/play")
