@@ -46,6 +46,15 @@ def on_message(client, userdata, msg):
             updatedVol = True
         except:
             pass
+    elif msg.topic == "remote/next/state":
+        if s == "ON":
+            client.publish("music/control/next")
+    elif msg.topic == "remote/prev/state":
+        if s == "ON":
+            client.publish("music/control/previous")
+    elif msg.topic == "remote/mute/state":
+        if s == "ON":
+            client.publish("music/control/setvol", 0)
     else:
         print("Not traited:", msg.topic)
     
@@ -57,12 +66,13 @@ client.connect("mpd.lan")
 client.subscribe("remote/playp/state")
 client.subscribe("remote/minus/state")
 client.subscribe("remote/plus/state")
+client.subscribe("remote/next/state")
+client.subscribe("remote/prev/state")
+client.subscribe("remote/mute/state")
 client.subscribe("music/status")
 client.subscribe("laumio/status/advertise")
 client.loop_start()
 client.publish("laumio/all/discover")
-client.publish("music/control/play")
-client.publish("music/control/setvol", 75)
 
 time.sleep(1)
 for _ in range(500):
