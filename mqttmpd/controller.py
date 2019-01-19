@@ -93,6 +93,7 @@ class MQTTMPDController(object):
         self.mqtt_client.subscribe(os.path.join(self.mqtt_topicbase, 'control/#'))
 
     def _on_message(self, client, userdata, msg):
+        print(msg.payload.decode("utf-8"), msg.topic)
         command_handler = self._commands.get(msg.topic.split('/')[-1])
         if command_handler is not None:
             self.mpd_client = self.mpd_connect()
