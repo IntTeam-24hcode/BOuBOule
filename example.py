@@ -38,7 +38,7 @@ cmd3 = {
 # mqttc.publish("laumio/Laumio_107DA8/json", json.dumps(cmd3))
 # sleep(1)
 # mqttc.publish("laumio/Laumio_104F03/json", json.dumps(cmd))
-
+#coucou 
 mqttc.loop_forever()
 #mqttc.publish("laumio/all/json", json.dumps(cmd2))
 
