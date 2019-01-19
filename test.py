@@ -5,10 +5,15 @@ import json
 
 laumios = set()
 addVol = 0
+updatedVol = True
+musicVOL = 50
+
+def toVol(v):
+    return max(0, min(100, v))
 
 def on_message(client, userdata, msg):
     global tmin, tmax
-    global musicVOL
+    global musicVOL, addVol, updatedVol
     s = str(msg.payload)[2:-1]
     if msg.topic == "laumio/status/advertise":
         if s != "discover" and (s not in laumios):
@@ -16,15 +21,29 @@ def on_message(client, userdata, msg):
     elif msg.topic == "remote/playp/state":
         if s == "ON":
             client.publish("music/control/toggle")
-    elif msg.topic == "remote/minus/state":
+    elif msg.topic == "remote/minus/state" or msg.topic == "remote/plus/state":
+        isPlus = msg.topic.count("plus") == 1
         if s == "ON":
             client.publish("music/control/getvol")
-            tmin=time.time()
+            if isPlus:
+                tmax = time.time()
+            else:
+                tmin = time.time()
+            updatedVol = False
         else:
-            dt= time.time()-tmin
+            dt = time.time()- (tmax if isPlus else tmin)
+            dvol = (1 + max(0, dt - 1) * 3) * (1 if isPlus else -1)
+            if updatedVol:
+                client.publish("remote/control/setVol", toVol(musicVOL + dvol))
+            else:
+                addVol += dvol
     elif msg.topic == "music/status":
         try:
             musicVOL = int(s)
+            if addVol != 0:
+                client.publish("remote/control/setVol", toVol(musicVOL + addVol))
+                addVol = 0
+            updatedVol = True
         except:
             pass
     
