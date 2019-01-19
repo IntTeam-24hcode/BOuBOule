@@ -46,12 +46,6 @@ def on_message(client, userdata, msg):
             updatedVol = True
         except:
             pass
-    
-
-
-        
-
-
     else:
         print("Not traited:", msg.topic)
     
