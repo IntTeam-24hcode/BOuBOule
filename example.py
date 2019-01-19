@@ -1,21 +1,5 @@
-#! /usr/bin/env python
-# -*- coding:utf8 -*-
-#
-# test_it.py
-#
-# Copyright © 2019 Mathieu Gaborit (matael) <mathieu@matael.org>
-#
-# Licensed under the "THE BEER-WARE LICENSE" (Revision 42):
-# Mathieu (matael) Gaborit wrote this file. As long as you retain this notice
-# you can do whatever you want with this stuff. If we meet some day, and you
-# think this stuff is worth it, you can buy me a beer or coffee in return
-#
-
-"""
-
-"""
 import json
-
+from time import sleep
 from mqttmpd import MQTTMPDController
 
 # instanciating a controller
@@ -28,15 +12,27 @@ controller = MQTTMPDController(
     mpd_port=6600
 )
 
+# def on_mes(self, )
+
 mqttc = controller.mqtt_connect()
+mqttc.subscribe("laumio/status/advertise")
+mqttc.publish("laumio/all/discover")
 
 cmd= {
   'command': 'fill',
-  'rgb': [255, 255, 0]
+  'rgb': [0, 255, 0]
 }
-mqttc.publish("laumio/all/json", json.dumps(cmd))
+cmd2 = {
+  'command': 'animate_rainbow'
+}
+cmd3 = {
+  'command': 'set_column',
+  'column': 0,
+  'rgb': [200, 56, 200]
+}
+mqttc.publish("laumio/Laumio_1D9486/json", json.dumps(cmd))
+# sleep(2)
+#mqttc.publish("laumio/all/json", json.dumps(cmd2))
 mqttc.loop_forever()
-# loop!
+
 controller.loop_forever()
-
-
