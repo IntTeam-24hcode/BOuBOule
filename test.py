@@ -34,24 +34,18 @@ def on_message(client, userdata, msg):
             dt = time.time()- (tmax if isPlus else tmin)
             dvol = (1 + max(0, dt - 1) * 3) * (1 if isPlus else -1)
             if updatedVol:
-                client.publish("remote/control/setVol", toVol(musicVOL + dvol))
+                client.publish("music/control/setvol", toVol(musicVOL + dvol))
             else:
                 addVol += dvol
     elif msg.topic == "music/status":
         try:
-            musicVOL = int(s)
+            musicVOL = int(s[8:])
             if addVol != 0:
-                client.publish("remote/control/setVol", toVol(musicVOL + addVol))
+                client.publish("music/control/setvol", toVol(musicVOL + addVol))
                 addVol = 0
             updatedVol = True
         except:
             pass
-    
-
-
-        
-
-
     else:
         print("Not traited:", msg.topic)
     
@@ -62,10 +56,13 @@ client.on_message = on_message
 client.connect("mpd.lan")
 client.subscribe("remote/playp/state")
 client.subscribe("remote/minus/state")
+client.subscribe("remote/plus/state")
+client.subscribe("music/status")
 client.subscribe("laumio/status/advertise")
 client.loop_start()
 client.publish("laumio/all/discover")
-# client.publish("music/control/pause")
+client.publish("music/control/play")
+client.publish("music/control/setvol", 75)
 
 time.sleep(1)
 for _ in range(500):
