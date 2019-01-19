@@ -14,6 +14,7 @@ def prev_song(client):
 def mute_song(client):
     client.publish("music/control/setvol", 0)
 
+
 def on_message(client, userdata, msg):
     global musicON
     s = str(msg.payload)[2:-1]
